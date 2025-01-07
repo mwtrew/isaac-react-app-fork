@@ -1,10 +1,20 @@
+ARG BUILD_TARGET="build-phy"
+
+FROM node:20.12.0-buster AS builder
+ARG BUILD_TARGET
+
+RUN mkdir /build
+WORKDIR /build
+
+COPY package.json /build
+COPY yarn.lock /build
+RUN yarn install --frozen-lockfile
+
+COPY . /build
+RUN yarn $BUILD_TARGET
+
 FROM nginx:stable
+ARG BUILD_TARGET
 
-ARG API_VERSION
-ARG SUBJECT
-ARG RENDERER_PATH=""
-
+COPY --from=builder /build/$BUILD_TARGET/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY ./build-$SUBJECT$RENDERER_PATH/ /usr/share/nginx/html
-
-LABEL apiVersion=$API_VERSION
