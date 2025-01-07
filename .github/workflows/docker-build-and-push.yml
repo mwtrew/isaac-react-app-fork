@@ -49,6 +49,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-phy-app.outputs.tags }}
           labels: ${{ steps.meta-phy-app.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
       - name: Generate artifact attestation for Physics image
         uses: actions/attest-build-provenance@v2
         with:
@@ -72,6 +74,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-phy-renderer.outputs.tags }}
           labels: ${{ steps.meta-phy-renderer.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
       - name: Generate artifact attestation for Physics renderer image
         uses: actions/attest-build-provenance@v2
         with:
@@ -95,6 +99,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-ada-app.outputs.tags }}
           labels: ${{ steps.meta-ada-app.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
       - name: Generate artifact attestation for Ada image
         uses: actions/attest-build-provenance@v2
         with:
@@ -118,6 +124,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-ada-renderer.outputs.tags }}
           labels: ${{ steps.meta-ada-renderer.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
       - name: Generate artifact attestation for Ada renderer image
         uses: actions/attest-build-provenance@v2
         with:
