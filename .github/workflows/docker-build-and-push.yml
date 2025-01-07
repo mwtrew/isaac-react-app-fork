@@ -7,6 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  NAMESPACE: mwtrew
   IMAGE_NAME_PHY: isaac-phy-app
   IMAGE_NAME_PHY_RENDERER: isaac-phy-app-renderer
   IMAGE_NAME_ADA: isaac-ada-app
@@ -36,7 +37,7 @@ jobs:
         id: meta-phy-app
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PHY }}
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY }}
       - name: Build and push Physics app image
         id: push-phy-app
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -50,7 +51,7 @@ jobs:
       - name: Generate artifact attestation for Physics image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PHY}}
+          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY}}
           subject-digest: ${{ steps.push-phy-app.outputs.digest }}
           push-to-registry: true
 
@@ -59,7 +60,7 @@ jobs:
         id: meta-phy-renderer
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PHY_RENDERER }}
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY_RENDERER }}
       - name: Build and push Physics renderer image
         id: push-phy-renderer
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -73,7 +74,7 @@ jobs:
       - name: Generate artifact attestation for Physics renderer image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PHY_RENDERER}}
+          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY_RENDERER}}
           subject-digest: ${{ steps.push-phy-renderer.outputs.digest }}
           push-to-registry: true
 
@@ -82,7 +83,7 @@ jobs:
         id: meta-ada-app
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ADA }}
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA }}
       - name: Build and push Ada app image
         id: push-ada-app
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -96,7 +97,7 @@ jobs:
       - name: Generate artifact attestation for Ada image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ADA}}
+          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA}}
           subject-digest: ${{ steps.push-ada-app.outputs.digest }}
           push-to-registry: true
 
@@ -105,7 +106,7 @@ jobs:
         id: meta-ada-renderer
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ADA_RENDERER }}
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA_RENDERER }}
       - name: Build and push Ada app image
         id: push-ada-renderer
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -119,7 +120,7 @@ jobs:
       - name: Generate artifact attestation for Ada renderer image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_ADA_RENDERER}}
+          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA_RENDERER}}
           subject-digest: ${{ steps.push-ada-renderer.outputs.digest }}
           push-to-registry: true
 
