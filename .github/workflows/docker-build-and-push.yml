@@ -73,7 +73,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Generate artifact attestation for Physics image
+      - name: Generate artifact attestation for image
         uses: actions/attest-build-provenance@v2
         if: env.exists == 'false'
         with:
