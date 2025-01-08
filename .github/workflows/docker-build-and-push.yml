@@ -65,8 +65,8 @@ jobs:
       - name: Update tags for existing image
         if: env.exists == 'true' && startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker tag ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ github.ref }}
-          docker push ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ github.ref }}
+          docker tag ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ steps.meta.outputs.version }}
+          docker push ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}:${{ steps.meta.outputs.version }}
       - name: Build and push new image
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
