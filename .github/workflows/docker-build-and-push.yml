@@ -9,10 +9,6 @@ on:
 env:
   REGISTRY: ghcr.io
   NAMESPACE: mwtrew
-  IMAGE_NAME_PHY: isaac-phy-app
-  IMAGE_NAME_PHY_RENDERER: isaac-phy-app-renderer
-  IMAGE_NAME_ADA: isaac-ada-app
-  IMAGE_NAME_ADA_RENDERER: isaac-ada-app-renderer
 
 jobs:
   build-and-push-image:
@@ -22,7 +18,20 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-      #
+
+    strategy:
+      matrix:
+        target: [build-phy, build-phy-renderer, build-ada, build-ada-renderer]
+        include:
+          - target: build-phy
+            image-name: isaac-phy-app
+          - target: build-phy-renderer
+            image-name: isaac-phy-app-renderer
+          - target: build-ada
+            image-name: isaac-ada-app
+          - target: build-ada-renderer
+            image-name: isaac-ada-app-renderer
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,94 +41,25 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # Physics app
-      - name: Get metadata for Physics app image
-        id: meta-phy-app
+      - name: Get metadata for image
+        id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY }}
-      - name: Build and push Physics app image
-        id: push-phy-app
+          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}
+      - name: Build and push image
+        id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           build-args: |
-            BUILD_TARGET=build-phy
+            BUILD_TARGET=${{ matrix.target }}
           push: true
-          tags: ${{ steps.meta-phy-app.outputs.tags }}
-          labels: ${{ steps.meta-phy-app.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       - name: Generate artifact attestation for Physics image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY}}
-          subject-digest: ${{ steps.push-phy-app.outputs.digest }}
+          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.image-name }}
+          subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      # Physics renderer
-      - name: Get metadata for Physics renderer image
-        id: meta-phy-renderer
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY_RENDERER }}
-      - name: Build and push Physics renderer image
-        id: push-phy-renderer
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          build-args: |
-            BUILD_TARGET=build-phy-renderer
-          push: true
-          tags: ${{ steps.meta-phy-renderer.outputs.tags }}
-          labels: ${{ steps.meta-phy-renderer.outputs.labels }}
-      - name: Generate artifact attestation for Physics renderer image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_PHY_RENDERER}}
-          subject-digest: ${{ steps.push-phy-renderer.outputs.digest }}
-          push-to-registry: true
-
-      # Ada app
-      - name: Get metadata for Ada app image
-        id: meta-ada-app
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA }}
-      - name: Build and push Ada app image
-        id: push-ada-app
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          build-args: |
-            BUILD_TARGET=build-ada
-          push: true
-          tags: ${{ steps.meta-ada-app.outputs.tags }}
-          labels: ${{ steps.meta-ada-app.outputs.labels }}
-      - name: Generate artifact attestation for Ada image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA}}
-          subject-digest: ${{ steps.push-ada-app.outputs.digest }}
-          push-to-registry: true
-
-      # Ada renderer
-      - name: Get metadata for Ada renderer image
-        id: meta-ada-renderer
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA_RENDERER }}
-      - name: Build and push Ada renderer image
-        id: push-ada-renderer
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: .
-          build-args: |
-            BUILD_TARGET=build-ada-renderer
-          push: true
-          tags: ${{ steps.meta-ada-renderer.outputs.tags }}
-          labels: ${{ steps.meta-ada-renderer.outputs.labels }}
-      - name: Generate artifact attestation for Ada renderer image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME_ADA_RENDERER}}
-          subject-digest: ${{ steps.push-ada-renderer.outputs.digest }}
-          push-to-registry: true
