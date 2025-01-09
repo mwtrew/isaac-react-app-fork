@@ -2,6 +2,7 @@ ARG BUILD_TARGET="build-phy"
 
 FROM node:20.12.0-buster AS builder
 ARG BUILD_TARGET
+ARG REACT_APP_API_VERSION
 
 RUN mkdir /build
 WORKDIR /build
