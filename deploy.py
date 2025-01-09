@@ -11,7 +11,7 @@ from typing import Union
 
 # Global flag, whether commands should be executed by this script or not
 EXEC = False
-
+DOCKER_REPO = "ghcr.io/mwtrew"
 
 class Site(object):
     PHY = 'phy'
@@ -118,12 +118,6 @@ def ask_to_run_command(command,
             if response in ["c", "continue"]:
                 print("Continuing...")
                 return
-
-
-def build_docker_image_for_version(ctx):
-    print("\n# BUILD THE APP AND API")
-    ask_to_run_command(f"./build-in-docker.sh {ctx['app']}{' ' + ctx['api'] if 'api' in ctx and ctx['api'] is not None else ''}")
-
 
 def get_old_versions(ctx):
     if not ctx['previous_servers_exist']:
@@ -275,7 +269,7 @@ def deploy_live(ctx):
 
     if front_end_only_release:
         print("# Front-end-only release - confirm which API this app image expects:")
-        expected_api = ask_to_run_command(f"docker inspect --format '{{{{ index .Config.Labels \"apiVersion\"}}}}' docker.isaacscience.org/isaac-{ctx['site']}-app:{ctx['app']}")
+        expected_api = ask_to_run_command(f"docker inspect --format '{{{{ index .Config.Labels \"apiVersion\"}}}}' {DOCKER_REPO}/isaac-{ctx['site']}-app:{ctx['app']}")
 
         print("# Front-end-only release - confirm the expected API is running:")
         ask_to_run_command(f"docker ps --format '{{{{.Names}}}}' | grep {ctx['site']}-api-live-{expected_api}")
@@ -348,7 +342,6 @@ if __name__ == '__main__':
     print("\n# ! THIS SCRIPT IS STILL EXPERIMENTAL SO CHECK EACH COMMAND BEFORE EXECUTING IT !\n")
     check_repos_are_up_to_date()
 
-    build_docker_image_for_version(context)
     check_running_servers(context)
 
     sites = [Site.ADA, Site.PHY] if context['site'] == Site.BOTH else [context['site']]
