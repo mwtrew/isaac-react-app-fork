@@ -52,7 +52,6 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
       - name: Build and push image for tag
-        # If this is a release tag (vX.Y.Z), bake in the API version defined in .env.
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         if: startsWith(github.ref, 'refs/tags/v')
         with:
@@ -63,7 +62,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Build and push image for branch
-        # Otherwise, assume there is an API branch with the same name(!) and use that.
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         if: !startsWith(github.ref, 'refs/tags/v')
         with:
