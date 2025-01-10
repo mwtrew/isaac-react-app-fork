@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-# USAGE: python tag.py --app=minor --api=major
-#
-# TODO ./build-in-docker would be good to be triggered automatically on tag
-# TODO support release candidate versions?
-# TODO tag-in-docker might be cleaner if we could get the git auth working nicely
-
 import argparse
 import requests
 import subprocess
@@ -23,7 +16,7 @@ semver_options = {
     'none': 'Don\'t update this service'
 }
 _default_subprocess_options = {'shell': True, 'check': True, 'capture_output': True, 'text': True}
-api_working_directory = '../isaac-api'
+api_working_directory = '../isaac-api-fork'
 subprocess_options = {
     'app': dict({}, **_default_subprocess_options),
     'api': dict({'cwd': api_working_directory}, **_default_subprocess_options),
@@ -62,8 +55,8 @@ def get_update_description_from_user(cli_input):
 
 def get_versions_from_github():
     return {
-        'app': requests.get('https://api.github.com/repos/isaacphysics/isaac-react-app/tags').json()[0]['name'],
-        'api': requests.get('https://api.github.com/repos/isaacphysics/isaac-api/tags').json()[0]['name'],
+        'app': requests.get('https://api.github.com/repos/mwtrew/isaac-react-app-fork/tags').json()[0]['name'],
+        'api': requests.get('https://api.github.com/repos/mwtrew/isaac-api-fork/tags').json()[0]['name'],
     }
 
 def get_build_results_from_github(repo, branch):
@@ -71,11 +64,11 @@ def get_build_results_from_github(repo, branch):
     link = None
     try:
         if repo == 'api':
-            result = requests.get(f"https://api.github.com/repos/isaacphysics/isaac-api/actions/workflows/maven.yml/runs?branch={branch}").json()['workflow_runs'][0]
+            result = requests.get(f"https://api.github.com/repos/mwtrew/isaac-api-fork/actions/workflows/maven.yml/runs?branch={branch}").json()['workflow_runs'][0]
             conclusion = result['conclusion']
             link = result['html_url']
         elif repo == 'app':
-            result = requests.get(f"https://api.github.com/repos/isaacphysics/isaac-react-app/actions/workflows/node.js.yml/runs?branch={branch}").json()['workflow_runs'][0]
+            result = requests.get(f"https://api.github.com/repos/mwtrew/isaac-react-app-fork/actions/workflows/node.js.yml/runs?branch={branch}").json()['workflow_runs'][0]
             conclusion = result['conclusion']
             link = result['html_url']
     except Exception as e:
