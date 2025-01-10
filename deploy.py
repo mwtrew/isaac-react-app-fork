@@ -27,7 +27,7 @@ def assert_using_a_tty():
 
 def check_repos_are_up_to_date():
     print("# Git pull for the latest version of the deploy script and db schema:")
-    ask_to_run_command("git pull && cd ../isaac-api && git pull && cd -")
+    ask_to_run_command("git pull && cd ../isaac-api-fork && git pull && cd -")
 
 
 def parse_command_line_arguments():
@@ -169,7 +169,7 @@ def update_config(ctx):
 def run_db_migrations(ctx):
     get_old_versions(ctx)
     print("# Print migration SQL to terminal (to copy)?")
-    ask_to_run_command(f"cd /local/src/isaac-api && git diff --name-only {ctx['old_api']} {ctx['api']} -- src/main/resources/db_scripts/migrations | xargs cat")
+    ask_to_run_command(f"cd /local/src/isaac-api-fork && git diff --name-only {ctx['old_api']} {ctx['api']} -- src/main/resources/db_scripts/migrations | xargs cat")
     print("# If there are any DB migrations, run them (in a transaction with a BEGIN; ROLLBACK; or COMMIT;). The following should be run in a separate terminal:")
     print(f"docker exec -it {ctx['site']}-pg-{ctx['env']} psql -U rutherford")
 

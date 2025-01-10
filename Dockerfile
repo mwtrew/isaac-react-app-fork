@@ -16,6 +16,9 @@ RUN yarn $BUILD_TARGET
 
 FROM nginx:stable
 ARG BUILD_TARGET
+ARG REACT_APP_API_VERSION
 
 COPY --from=builder /build/$BUILD_TARGET/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
+
+LABEL apiVersion=$API_VERSION
