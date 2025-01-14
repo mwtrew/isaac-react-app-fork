@@ -47,7 +47,7 @@ def validate_args(args):
         sys.exit(1)
 
     if 'api' in args and args['api'] is not None:
-        print(f"WARNING ⚠️: The 'api' argument is deprecated and this value will be ignored. The API version is now derived from the app image. See [todo] for more info.\n")
+        print(f"WARNING ⚠️: The 'api' argument is deprecated and this value will be ignored. The API version is now derived from the app image. See https://github.com/isaacphysics/isaac-adrs/blob/main/7-automated-docker-builds.md for more info.\n")
         args['api'] = None
 
     return args
