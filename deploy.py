@@ -46,6 +46,9 @@ def validate_args(args):
         print(f"Error: the app param should be v{args['app']} not {args['app']}")
         sys.exit(1)
 
+    # Docker doesn't like it when ref contains a slash. When building on GHA we swap these with dashes, so we'll do that here too.
+    args['app'] = args['app'].replace('/', '-')
+
     if 'api' in args and args['api'] is not None:
         print(f"WARNING ⚠️: The 'api' argument is deprecated and this value will be ignored. The API version is now derived from the app image. See https://github.com/isaacphysics/isaac-adrs/blob/main/7-automated-docker-builds.md for more info.\n")
         args['api'] = None
